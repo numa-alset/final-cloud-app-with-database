@@ -111,9 +111,8 @@ def enroll(request, course_id):
          # Add each selected choice object to the submission object
          # Redirect to show_exam_result with the submission id
 def submit(request, course_id):
-   course = get_object_or_404(Course, pk=course_id)
-    user = request.user
-        submitted_anwsers = []
+    Enrollment.objects.get(user=request.user, course=course_id)
+    submitted_anwsers = []
     for key in request.POST:
         if key.startswith('choice'):
             value = request.POST[key]
@@ -142,14 +141,14 @@ def submit(request, course_id):
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
-    selected_choice = Submission.choices.filter(submission.id=submission_id)
+    selected_choice = Submission.choices.filter(submission_id=submission.id)
     win=0
     num=0
     for cho in selected_choice:
-        if cho=Choice.id.filter(is_correct):
+        if cho.is_correct:
             win +=1
         num +=1
     grade =(win/num)*100
-    return return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(Question.grade=grade,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(grade,)))
 
 
