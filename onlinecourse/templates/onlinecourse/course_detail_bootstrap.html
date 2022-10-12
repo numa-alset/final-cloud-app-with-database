@@ -64,15 +64,16 @@
             -->
 
             <!-- <HINT> If user is authenticated, show course exam with a list of question -->
-            {% if user.is_authenticated %}
+           
             
             <button data-toggle="collapse" data-target="#demo">start exam</button>
             <div id="demo" class="collapse">
                 
-                
+                 {% if user.is_authenticated %}
                       
-                    <form id="questionform" action="{% url 'onlinecourse:submit' 1 %}" method="post">
-                       {% for question in course.question_set.all %}
+                    <form id="questionform" action="{% url "onlinecourse:submit" course.pk%}" method="post">
+                       {% for lesson in course.lesson_set.all %}
+                        {% for question in course.question_set.all %}
                         <div class="card mt-1">
                             <div class="card-header"><h5>{{question.q_text}}</h5></div>
                             {% csrf_token %}
@@ -89,6 +90,7 @@
                             </div>
                         </div>
                         {% endfor %}
+                          {% endfor %}
                     <input class="btn btn-success btn-block" type="submit" value="Submit">
                     </form> -->
             <!-- <HINT> Each example will have many questions -->
