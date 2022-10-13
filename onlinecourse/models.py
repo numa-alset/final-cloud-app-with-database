@@ -102,9 +102,12 @@ class Enrollment(models.Model):
     # Has question content
     # Other fields and methods you would like to design
 class Question(models.Model):
-    lesson_id= models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    q_text = models.CharField(max_length=100, null=False)
-    grade = models.FloatField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,default="")
+    content = models.CharField(max_length=200,default="")
+    grade = models.IntegerField(default=50)
+
+    def __str__(self):
+        return "Question: " + self.content
 
 #class Question(models.Model):
     # Foreign key to lesson
@@ -128,12 +131,9 @@ class Question(models.Model):
     # Indicate if this choice of the question is a correct one or not
     # Other fields and methods you would like to design
 class Choice(models.Model):
-     question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
-     c_text = models.CharField(max_length=100,null=False)
-     is_correct = models.BooleanField()
-     def __str__(self):
-        return self.choice_text
-
+    question = models.ForeignKey(Question, on_delete=models.CASCADE,default="")
+    content = models.CharField(max_length=200,default="")
+    is_correct = models.BooleanField(default=False)            
   
 #<HINT> The submission model
 
