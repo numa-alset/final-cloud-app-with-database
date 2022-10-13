@@ -48,8 +48,7 @@
                         <div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div>
                         <div class="card-body">{{lesson.content}}</div>
                     </div>
-                {% endfor %}
-            </div>
+            
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
             https://www.w3schools.com/bootstrap4/bootstrap_collapse.asp-->
@@ -71,9 +70,9 @@
                 
                  {% if user.is_authenticated %}
                       
-                    <form id="questionform" action="{% url "onlinecourse:submit" course.pk%}" method="post">
-                       {% for lesson in course.lesson_set.all %}
-                        {% for question in course.question_set.all %}
+                    <form id="questionform" action="{% url 'onlinecourse:submit' course.pk %}" method="post">
+                       
+                        {% for question in lesson.question_set.all %}
                         <div class="card mt-1">
                             <div class="card-header"><h5>{{question.q_text}}</h5></div>
                             {% csrf_token %}
@@ -90,9 +89,11 @@
                             </div>
                         </div>
                         {% endfor %}
-                          {% endfor %}
+                         
                     <input class="btn btn-success btn-block" type="submit" value="Submit">
-                    </form> -->
+                    
+                    </form> 
+                    
             <!-- <HINT> Each example will have many questions -->
 
             <!-- <HINT> Each question will have many choices -->
@@ -126,6 +127,9 @@
             <!--Check here to see more details Bootstrap checkbox
              https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
     </div>
+    
     {% endif %}
+    {% endfor %}
+            </div>
 </body>
 </html>
