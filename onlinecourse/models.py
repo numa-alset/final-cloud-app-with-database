@@ -131,7 +131,7 @@ class Choice(models.Model):
      question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
      c_text = models.CharField(max_length=100,null=False)
      is_correct = models.BooleanField()
-     def__str__(self):
+     def __str__(self):
         return self.choice_text
 
   
