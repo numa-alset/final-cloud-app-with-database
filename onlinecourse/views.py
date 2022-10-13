@@ -119,32 +119,31 @@ def extract_answers(request):
          # Add each selected choice object to the submission object
          # Redirect to show_exam_result with the submission id
 def submit(request, course_id):
-    user=request.user
-    course=get_object_or_404(Course, pk=course_id)
-    enroll = Enrollment.objects.filter(user=user, course=course).get()
-    choices=extract_answers(request)
-    submission=Submission.objects.create(enrollment_id=enroll.id)
-    for sub in choices:
-        c= Choice.objects.filter(id = int(sub)).get()
-        submission.choices.add(c)
-    submission.save()
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result',args=(course.id,submission.id)))
+    course = get_object_or_404(Course, pk=course_id)
+    user = request.user
+    enrollment = Enrollment.objects.get(user=user, course=course)
+    submission = Submission.objects.create(enrollment=enrollment)
+    choices = extract_answers(request)
+    submission.choices.set(choices)
+    submission_id = submission.id
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(course_id, submission_id,)))
 
 # <HINT> A example method to collect the selected choices from the exam form from the request object
 
-
-def show_exam_result(request,course_id, submission_id):
-    context={}
-    course=Course.objects.get(id=course_id)
-    submit=Submission.objects.get(id=submission_id)
-    selected_choice = Submission.objects.filter(id=submission_id).values_list('choices',flat=True)
-    score = 0
-    for i in submit.choices.all().filter(is_correct=True).values_list('question_id'):
-        score += Question.objects.filter(id=i[0]).first().grade    
-    context['selected'] = selected
-    context['grade'] = score
+def show_exam_result(request, course_id, submission_id):
+    context = {}
+    course = get_object_or_404(Course, pk=course_id)
+    submission = Submission.objects.get(id=submission_id)
+    choices = submission.choices.all()
+    total_score = 0
+    for choice in choices:
+        if choice.is_correct:
+            total_score += choice.question.grade
     context['course'] = course
-    return  render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+    context['grade'] = total_score
+    context['choices'] = choices
+
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)  
 
 
 
